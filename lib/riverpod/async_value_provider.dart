@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final customAsyncValueProvider = StateNotifierProvider<AsyncValueNotifier, AsyncValue<List<int>>>(
+final customAsyncValueProvider =
+    StateNotifierProvider<AsyncValueNotifier, AsyncValue<List<int>>>(
   (ref) {
     return AsyncValueNotifier();
   },
@@ -19,7 +20,7 @@ class AsyncValueNotifier extends StateNotifier<AsyncValue<List<int>>> {
 
       state = AsyncValue.data(List.generate(10, (index) => index * 2));
     } catch (e, stack) {
-      state = AsyncValue.error(e, stackTrace: stack);
+      // state = AsyncValue.error(e, stackTrace: stack);
     }
   }
 

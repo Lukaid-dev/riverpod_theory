@@ -37,7 +37,9 @@ class ProviderScreen extends ConsumerWidget {
                 value: e.hasBought,
                 title: Text('${e.name}(${e.quantity})'),
                 onChanged: (value) {
-                  ref.read(shoppingListNotifierProvider.notifier).toggleTodo(
+                  ref
+                      .read(shoppingListNotifierProvider.notifier)
+                      .toggleHasBought(
                         name: e.name,
                       );
                 },

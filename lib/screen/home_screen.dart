@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_theory/layout/default_elevated_button.dart';
 import 'package:riverpod_theory/layout/default_layout.dart';
 import 'package:riverpod_theory/screen/async_value_screen.dart';
 import 'package:riverpod_theory/screen/auto_dispose_screen.dart';
@@ -19,22 +20,27 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String description = '''
+riverpod에서 모든 provider는 Global하게 선언된다.
+''';
 
     return DefaultLayout(
-      title: 'HomeScreen',
+      title: 'Riverpod Theory',
+      description: description,
       body: ListView(
         children: [
-          ElevatedButton(
+          const SizedBox(height: 16.0),
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => StateProviderScreen(),
+                  builder: (_) => const StateProviderScreen(),
                 ),
               );
             },
             child: Text('StateProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -44,7 +50,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('StateNotifierProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -54,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('ProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -64,7 +70,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('FutureProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -74,7 +80,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('StreamProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -84,7 +90,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('FamilyProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -94,7 +100,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('MapAndWhenScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -104,7 +110,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('AsyncValueScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -114,7 +120,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('AutoDisposeScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -124,7 +130,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('ListenProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -134,7 +140,7 @@ class HomeScreen extends ConsumerWidget {
             },
             child: Text('SelectProviderScreen'),
           ),
-          ElevatedButton(
+          DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(

@@ -7,7 +7,7 @@ void main() {
   runApp(
     ProviderScope(
       observers: [Logger()],
-      child: MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomeScreen(),
       ),
