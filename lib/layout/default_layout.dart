@@ -63,14 +63,6 @@ class _ExplainBox extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            // child: Text(
-            //   description!,
-            //   style: const TextStyle(
-            //     color: Colors.black,
-            //     fontSize: 14.0,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
             child: RichText(
               text: TextSpan(
                 style: const TextStyle(
