@@ -8,10 +8,15 @@ class FutureProviderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String description = '''
+똑같이 state를 watch하고, state.when을 통해 상태에 따라 다른 UI를 보여준다.
+''';
+
     final AsyncValue<List<int>> numbers = ref.watch(multiplesFutureProvider);
 
     return DefaultLayout(
       title: 'FutureProvider',
+      description: description,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -22,7 +27,7 @@ class FutureProviderScreen extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
             error: (err, stack) => Text('Error: $err'),
-            loading: () => Center(
+            loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
           ),

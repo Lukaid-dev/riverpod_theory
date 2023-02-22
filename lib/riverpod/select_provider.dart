@@ -8,7 +8,7 @@ final selectProvider = StateNotifierProvider<SelectNotifier, ShoppingItemModel>(
 class SelectNotifier extends StateNotifier<ShoppingItemModel> {
   SelectNotifier()
       : super(
-          ShoppingItemModel(
+          const ShoppingItemModel(
             name: '김치',
             quantity: 1,
             hasBought: false,

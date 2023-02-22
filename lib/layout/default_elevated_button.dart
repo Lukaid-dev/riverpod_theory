@@ -14,12 +14,17 @@ class DefaultElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      ElevatedButton(
-        onPressed: onPressed,
-        child: child,
-      ),
-      const SizedBox(height: 8.0),
-    ]);
+    return Column(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: ElevatedButton(
+            onPressed: onPressed,
+            child: child,
+          ),
+        ),
+        const SizedBox(height: 8.0),
+      ],
+    );
   }
 }

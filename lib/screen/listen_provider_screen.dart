@@ -7,10 +7,11 @@ class ListenProviderScreen extends ConsumerStatefulWidget {
   const ListenProviderScreen({Key? key}) : super(key: key);
 
   @override
-  ListenProviderScreenState createState() => ListenProviderScreenState();
+  ConsumerState<ListenProviderScreen> createState() =>
+      _ListenProviderScreenState();
 }
 
-class ListenProviderScreenState extends ConsumerState<ListenProviderScreen>
+class _ListenProviderScreenState extends ConsumerState<ListenProviderScreen>
     with TickerProviderStateMixin {
   late final TabController tabController;
 
@@ -27,20 +28,25 @@ class ListenProviderScreenState extends ConsumerState<ListenProviderScreen>
 
   @override
   Widget build(BuildContext context) {
+    String description = '''
+보통 listen은 initState에서 사용되지만, riverpod에서는 build함수 내에서도 사용가능하다.
+ConsumerStatefulWidget은 바로 ref에 접근 할 수 있다.
+ref.listen : Provider의 state가 변할 때마다 호출되는 함수
+''';
     ref.listen<int>(listenProvider, (previous, next) {
-      print('run');
       if (previous != next) {
         tabController.animateTo(
           next,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         );
       }
     });
 
     return DefaultLayout(
       title: 'ListenProvider',
+      description: description,
       body: TabBarView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: tabController,
         children: List.generate(
           10,
@@ -58,7 +64,7 @@ class ListenProviderScreenState extends ConsumerState<ListenProviderScreen>
                             .read(listenProvider.notifier)
                             .update((state) => state == 0 ? 0 : state - 1);
                       },
-                      child: Text('뒤로'),
+                      child: const Text('뒤로'),
                     ),
                   ),
                   const SizedBox(width: 12.0),
@@ -67,11 +73,11 @@ class ListenProviderScreenState extends ConsumerState<ListenProviderScreen>
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => _NextScreen(),
+                            builder: (_) => const _NextScreen(),
                           ),
                         );
                       },
-                      child: Text('다음페이지'),
+                      child: const Text('다음페이지'),
                     ),
                   ),
                   const SizedBox(width: 12.0),
@@ -82,7 +88,7 @@ class ListenProviderScreenState extends ConsumerState<ListenProviderScreen>
                             .read(listenProvider.notifier)
                             .update((state) => state == 10 ? 10 : state + 1);
                       },
-                      child: Text('다음'),
+                      child: const Text('다음'),
                     ),
                   ),
                 ],
@@ -112,7 +118,7 @@ class _NextScreen extends ConsumerWidget {
                       .read(listenProvider.notifier)
                       .update((state) => state == 0 ? 0 : state - 1);
                 },
-                child: Text('뒤로'),
+                child: const Text('뒤로'),
               ),
             ),
             const SizedBox(width: 16.0),
@@ -123,7 +129,7 @@ class _NextScreen extends ConsumerWidget {
                       .read(listenProvider.notifier)
                       .update((state) => state == 10 ? 10 : state + 1);
                 },
-                child: Text('다음'),
+                child: const Text('다음'),
               ),
             ),
           ],

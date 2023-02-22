@@ -8,15 +8,20 @@ class StreamProviderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String description = '''
+똑같이 state를 watch하고, state.when을 통해 상태에 따라 다른 UI를 보여준다.
+stream에 따라 state가 변하고 이때마다 UI를 rebuild한다.
+''';
     final AsyncValue<List<int>> stream = ref.watch(multiplesStreamProvider);
 
     return DefaultLayout(
       title: 'StreamProvider',
+      description: description,
       body: Center(
         child: stream.when(
           data: (data) => Text(data.toString()),
           error: (error, stack) => Text('Error: $error'),
-          loading: () => CircularProgressIndicator(),
+          loading: () => const CircularProgressIndicator(),
         ),
       ),
     );

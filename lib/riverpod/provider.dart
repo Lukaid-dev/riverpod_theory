@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_theory/model/shopping_item_model.dart';
 import 'package:riverpod_theory/riverpod/state_notifier_provider.dart';
 
-final filteredShoppingListProvider = Provider((ref) {
+final filteredShoppingListProvider = Provider<List<ShoppingItemModel>>((ref) {
   final sProvider = ref.watch(shoppingListNotifierProvider);
   final fProvider = ref.watch(filterProvider);
 
@@ -10,8 +11,8 @@ final filteredShoppingListProvider = Provider((ref) {
   }
 
   return fProvider == FilterState.spicy
-      ? sProvider.where((element) => element.isSpicy)
-      : sProvider.where((element) => !element.isSpicy);
+      ? sProvider.where((element) => element.isSpicy).toList()
+      : sProvider.where((element) => !element.isSpicy).toList();
 });
 
 enum FilterState {

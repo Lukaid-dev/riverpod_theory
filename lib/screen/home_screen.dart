@@ -38,58 +38,96 @@ riverpod에서 모든 provider는 Global하게 선언된다.
                 ),
               );
             },
-            child: Text('StateProviderScreen'),
+            child: const Text('StateProviderScreen'),
           ),
           DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => StateNotifierProviderScreen(),
+                  builder: (_) => const StateNotifierProviderScreen(),
                 ),
               );
             },
-            child: Text('StateNotifierProviderScreen'),
+            child: const Text('StateNotifierProviderScreen'),
           ),
           DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => ProviderScreen(),
+                  builder: (_) => const FutureProviderScreen(),
                 ),
               );
             },
-            child: Text('ProviderScreen'),
+            child: const Text('FutureProviderScreen'),
           ),
           DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => FutureProviderScreen(),
+                  builder: (_) => const StreamProviderScreen(),
                 ),
               );
             },
-            child: Text('FutureProviderScreen'),
+            child: const Text('StreamProviderScreen'),
           ),
           DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => StreamProviderScreen(),
+                  builder: (_) => const FamilyProviderScreen(),
                 ),
               );
             },
-            child: Text('StreamProviderScreen'),
+            child: const Text('FamilyProviderScreen'),
           ),
           DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => FamilyProviderScreen(),
+                  builder: (_) => const AutoDisposeScreen(),
                 ),
               );
             },
-            child: Text('FamilyProviderScreen'),
+            child: const Text('AutoDisposeScreen'),
           ),
+          DefaultElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const ListenProviderScreen(),
+                ),
+              );
+            },
+            child: const Text('ListenProviderScreen'),
+          ),
+          DefaultElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const SelectProviderScreen(),
+                ),
+              );
+            },
+            child: const Text('SelectProviderScreen'),
+          ),
+          DefaultElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const ProviderScreen(),
+                ),
+              );
+            },
+            child: const Text('ProviderScreen'),
+          ),
+          ////////////////////////////////////////////////////////////
+          // divider
+          const SizedBox(height: 8.0),
+          const Divider(
+            color: Colors.black,
+            height: 1.0,
+          ),
+          const SizedBox(height: 16.0),
           DefaultElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -109,36 +147,6 @@ riverpod에서 모든 provider는 Global하게 선언된다.
               );
             },
             child: Text('AsyncValueScreen'),
-          ),
-          DefaultElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AutoDisposeScreen(),
-                ),
-              );
-            },
-            child: Text('AutoDisposeScreen'),
-          ),
-          DefaultElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => ListenProviderScreen(),
-                ),
-              );
-            },
-            child: Text('ListenProviderScreen'),
-          ),
-          DefaultElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => SelectProviderScreen(),
-                ),
-              );
-            },
-            child: Text('SelectProviderScreen'),
           ),
           DefaultElevatedButton(
             onPressed: () {
