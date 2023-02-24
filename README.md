@@ -13,9 +13,9 @@
 
 ## The relationship between Riverpod and Provider
 
-Riverpod는 Provider의 다음 버전으로, Provider의 모든 기능을 포함하고 있습니다. (Riverpod은 Provider의 정신적 계승자로 설계되었으며, 그 이름도 Provider의 애너그램입니다.)
+Riverpod는 Provider의 다음 버전으로, Provider의 모든 기능을 포함하고 있습니다. (Riverpod는 Provider의 정신적 계승자로 설계되었으며, 그 이름도 Provider의 애너그램입니다.)
 
-당연하겠지만, Riverpod은 Provider의 여러 기술적 한계를 해결하기 위해 탄생하였습니다. 원래는 Provider의 메이저 업데이트의 일환으로 Riverpod을 출시 할 계획이었지만, 바뀐것도 많고 Provider도 워낙 많이 사용하는 패키지이기 때문에, Riverpod을 새로운 패키지로 출시하였습니다.
+당연하겠지만, Riverpod는 Provider의 여러 기술적 한계를 해결하기 위해 탄생하였습니다. 원래는 Provider의 메이저 업데이트의 일환으로 Riverpod을 출시 할 계획이었지만, 바뀐것도 많고 Provider도 워낙 많이 사용하는 패키지이기 때문에, Riverpod을 새로운 패키지로 출시하였습니다.
 
 떄문에, 개념적으로 Riverpod와 Provider는 상당히 유사하고, 두 패키지 모두 아래와 같이 비슷한 역할을 수행합니다.
 - 일부 stateful objects를 캐싱(cache)하고 폐기(dispose)함
@@ -79,6 +79,119 @@ void main() {
 
 Riverpod에서 providers는 plain Dart objects이기 때문에 Flutter없이도 Riverpod을 사용할 수 있다고 합니다! 예를 들면 커맨드 라인 어플리케이션에서도 Riverpod을 사용 할 수 있습니다.
 
+## Reading providers: BuildContext
+
+Provider에서 providers를 읽어오는 방법은 widget의 BuildContext를 이용하는 것이 유일합니다.
+
+예를들어 다음과 같이 정의된 provider는
+
+```dart
+Provider<Model>(...);
+```
+
+다음과 같이 읽어옵니다.
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Model model = context.watch<Model>();
+
+  }
+}
+```
+
+하지만, Riverpod에서는 다음과 같이 읽어옵니다.
+
+```dart
+final modelProvider = Provider<Model>(...);
+
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Model model = ref.watch(modelProvider);
+
+  }
+}
+```
+
+차이점이 보이시나요? 다음에 주목해보세요!
+
+- Riverpod의 경우 StatelessWidget 대신 ConsumerWidget을 extends합니다. 그리고 build함수 안에 WidgetRef type의 매개변수가 추가됩니다.
+- Provider에서는 BuildContext.watch를 사용했지만 Riverpod의 경우 ConsumerWidget에 포함된 WidgetRef를 이용하여 WidgetRef.watch를 사용합니다.
+- Riverpod는 Provider와 다르게, generic types에 의존하지 않습니다(타입으로 유추하지 않음). 대신에 provider에서 정의한 변수에 의존하죠. 그래서 위에서 정의한 modelProvider를 이용하여 ref.watch를 사용합니다. 이렇게 하면 generic type을 사용하지 않아도 되기 때문에 코드가 더 간결해집니다. 
+
+Riverpod나 Provider에서 둘 다 watch keyword를 “해당 값이 변경되었을 때 이 위젯은 리빌드 되어야해!”하고 알려주는 용도로 사용합니다.
+
+
+## Reading providers: Consumer
+
+Provider는 선택적으로 Consumer라는 이름의 위젯(및 Consumer2와 같은 변형)과 함께 providers를 읽어오기 위한 위젯을 제공합니다. 이는 필수가 아니지만, Consumer는 위젯 트리를 보다 세밀하게 재구성하여 상태가 변경될 때 해당 위젯만 업데이트할 수 있으므로 성능 최적화에 유리합니다. (실제로 저는 Provider를 사용한 프로젝트에서 Consumer를 거의 사용하지 않았습니다.)
+
+따라서 provider가 다음과 같이 정의되면,
+
+```dart
+Provider<Model>(...); 
+```
+
+Consumer를 사용하여 해당 provider를 다음과 같이 읽을 수 있습니다.
+
+```dart
+Consumer<Model>(
+  builder: (BuildContext context, Model model, Widget? child) {
+
+  }
+)
+```
+
+Riverpod도 같은 원리를 가지고 있고, Riverpod에도 정확히 똑같은 용도의 Consumer라는 위젯이 있습니다. (Riverpod 2.0에서 업데이트 되었습니다.)
+
+provider를 다음과 같이 정의했다면,
+
+```dart
+final modelProvider = Provider<Model>(...);
+```
+
+다음과 같이 Consumer를 사용할 수 있습니다.
+
+```dart
+Consumer<Model>(
+  builder: (BuildContext context, WidgetRef ref, Widget? child) {
+    Model model = ref.watch(modelProvider);
+
+  }
+)
+```
+
+Consumer가 어떻게 WidgetRef 객체를 제공하는지 주목해보면, 이전 파트에서 ConsumerWidget과 관련된 것과 동일한 것을 알 수 있습니다. 이렇게 하면, 위젯 내에서 내가 원하는 부분만 rebuild 할 수 있습니다. 심지어, Consumer위젯 내에서 child parameter를 제공하는데, rebuild시 이 child는 재사용되며, rebuild되지 않습니다. 이는 성능 최적화에 유리합니다.
+
+## Combining providers: ProxyProvider with stateless objects
+
+Provider를 사용할 때 providers를 결합하는 공식적인 방법은 ProxyProvider 위젯(또는 ProxyProvider2와 같은 변형)을 사용하는 것입니다. (상당히 복잡하고 어렵습니다... 제가 Provider를 사용하면서 가장 불만을 크게 느낀 부분입니다.)
+
+예를들어 다음과 같이 정의했다면,
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+우리는 두가지 옵션이 있는데, 하나는, 새로운 "stateless" provider를 생성하기 위해 UserIdNotifier를 결합할 수 있습니다. (이는, 일반적으로 override할 수 있는 immutable 값임)
+
+```dart
+ProxyProvider<UserIdNotifier, String>(
+  update: (context, userIdNotifier, _) {
+    return 'The user ID of the the user is ${userIdNotifier.userId}';
+  }
+)
+```
+
+이 provider는 UserIdNotifier.userId가 변경될 때마다 자동으로 새 String을 반환한다.
 
 </div>
 </details>
