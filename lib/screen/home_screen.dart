@@ -15,6 +15,8 @@ import 'package:riverpod_theory/screen/state_provider_screen.dart';
 import 'package:riverpod_theory/screen/stream_provider_screen.dart';
 import 'package:riverpod_theory/screen/using_ref_insde_screen.dart';
 
+import 'code_generation_screen.dart';
+
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -119,6 +121,24 @@ riverpod에서 모든 provider는 Global하게 선언된다.
               );
             },
             child: const Text('ProviderScreen'),
+          ),
+          ////////////////////////////////////////////////////////////
+          // divider
+          const SizedBox(height: 8.0),
+          const Divider(
+            color: Colors.black,
+            height: 1.0,
+          ),
+          const SizedBox(height: 16.0),
+          DefaultElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const CodeGenerationScreen(),
+                ),
+              );
+            },
+            child: const Text('CodeGenerationScreen'),
           ),
           ////////////////////////////////////////////////////////////
           // divider
