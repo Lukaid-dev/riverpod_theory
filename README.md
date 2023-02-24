@@ -123,6 +123,15 @@ class Example extends ConsumerWidget {
 
 Riverpod나 Provider에서 둘 다 watch keyword를 “해당 값이 변경되었을 때 이 위젯은 리빌드 되어야해!”하고 알려주는 용도로 사용합니다.
 
+### read vs watch
+
+이 문제는 Provider에서와 마찬가지로 작용합니다. 
+
+- BuildContext.watch -> WidgetRef.watch
+- BuildContext.read -> WidgetRef.read
+
+build 메서드 내에서는 watch를 사용하고, 클릭 핸들러 및 기타 이벤트 내부에서는 read를 사용합니다. (쉽게, UI를 업데이트하는 경우 watch를 사용하고, UI를 업데이트하지 않는 경우 read를 사용합니다.)
+
 
 ## Reading providers: Consumer
 
@@ -181,7 +190,9 @@ class UserIdNotifier extends ChangeNotifier {
 ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
 ```
 
-우리는 두가지 옵션이 있는데, 하나는, 새로운 "stateless" provider를 생성하기 위해 UserIdNotifier를 결합할 수 있습니다. (이는, 일반적으로 override할 수 있는 immutable 값임)
+provider를 proxy하는 두가지 방법이 있는데, 첫번쨰는 다음과 같습니다. (StatelessWidget)
+
+새로운 "stateless" provider를 생성하기 위해 UserIdNotifier를 결합할 수 있습니다. 
 
 ```dart
 ProxyProvider<UserIdNotifier, String>(
@@ -191,7 +202,118 @@ ProxyProvider<UserIdNotifier, String>(
 )
 ```
 
-이 provider는 UserIdNotifier.userId가 변경될 때마다 자동으로 새 String을 반환한다.
+이 provider는 UserIdNotifier.userId가 변경될 때마다 자동으로 새 String을 반환합니다.
+
+Riverpod에서도 비슷한 작업을 수행할 수 있지만 문법이 다릅니다. 먼저, Riverpod에서는 UserIdNotifier를 다음과 같이 정의합니다.
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+이렇게해서 사용자 아이디로 문자열을 생성할 수 있습니다.
+
+```dart
+final labelProvider = Provider<String>((ref) {
+  UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
+  return 'The user ID of the the user is ${userIdNotifier.userId}';
+});
+```
+
+riverpod에서는 ProxyProvider와 같은 위젯이 없습니다. 대신에, 위젯 내에서 다른 providers를 읽을 수 있습니다. 위의 예제에서 `ref.watch(userIdNotifierProvider)`가 있는 라인을 주목해보세요.
+
+해당 라인은 Riverpod에게 userIdNotifierProvider의 내용을 가져오고 해당 값이 변경될 때마다 labelProvider도 다시 계산되도록 지시합니다. 따라서 labelProvider가 내보내는 문자열은 userId가 변경될 때마다 자동으로 업데이트되죠.
+
+ref.watch를 포함한 라인에서 익숙한 느낌을 받았을 수 있습니다. riverpod에서 일반적으로 ref.watch를 사용하여 provider를 읽어오듯, provider안에서 다른 provider의 값을 참조할 때도, 마찬가지로 ref.watch를 사용하면 됩니다!! (proxyProvider 완성!)
+
+
+## Combining providers: ProxyProvider with stateful objects
+
+provider를 proxy하는 두번째 방법 ChangeNotifier instance와 같은 StatefulWidget을 사용하는 것입니다. Provider에서는 ChangeNotifierProxyProvider(또는 ChangeNotifierProxyProvider2와 같은 변형)를 사용할 수 있습니다.
+
+예를들면:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+이렇게 선언하고, UserIdNotifier.userId를 구독하는 알림을 만들 수 있습니다.
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
+  create: (context) => UserNotifier(),
+  update: (context, userIdNotifier, userNotifier) {
+    return userNotifier!
+      ..setUserId(userIdNotifier.userId);
+  },
+);
+```
+
+이 새 프로바이더(ChangeNotifierProxyProvider)는 UserNotifier의 단일 인스턴스를 생성하고 사용자 ID가 변경될 때마다 문자열을 반환합니다.
+
+riverpod에서는 어떨까요? 우선 `UserIdNotifier`를 다음과 같이 정의합니다.
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+이제 Provider에서의 `ChangeNotifierProxyProvider` 역할을 Riverpod에서는 어떻게 할 수 있을까요? Riverpod에서는 `ChangeNotifierProvider`를 사용하여 `UserNotifier`를 정의합니다.
+
+
+```dart
+class UserNotifier extends ChangeNotifier {}
+
+final userNotfierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  final userNotifier = UserNotifier();
+  ref.listen<UserIdNotifier>(
+    userIdNotifierProvider,
+    (previous, next) {
+      if (previous?.userId != next.userId) {
+        print('The user ID changed from ${previous?.userId} to ${next.userId}');
+      }
+    },
+  );
+
+  return userNotifier;
+});
+```
+
+위 예제의 핵심은 `ref.listen`를 포함한 라인입니다. 
+이 `ref.listen` 함수는 `userIdNotifierProvider`의 값이 변경될 때마다 callback을 호출합니다. 이 callback은 이전 값과 새로운 값을 인자로 받습니다. 이 예제에서는 이전 값과 새로운 값을 비교하여 사용자 ID가 변경되었는지 확인하고, 변경되었다면 변경된 값을 출력합니다.
+
 
 </div>
 </details>
