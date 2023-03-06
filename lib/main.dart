@@ -7,10 +7,12 @@ void main() {
   runApp(
     ProviderScope(
       observers: [Logger()],
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
-      ),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const HomeScreen(),
+          theme: ThemeData(
+            useMaterial3: true,
+          )),
     ),
   );
 }

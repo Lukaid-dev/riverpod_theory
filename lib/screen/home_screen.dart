@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_theory/layout/default_elevated_button.dart';
 import 'package:riverpod_theory/layout/default_layout.dart';
-import 'package:riverpod_theory/screen/async_value_screen.dart';
 import 'package:riverpod_theory/screen/auto_dispose_screen.dart';
 import 'package:riverpod_theory/screen/listen_provider_screen.dart';
-import 'package:riverpod_theory/screen/map_and_when_screen.dart';
 import 'package:riverpod_theory/screen/family_provider_screen.dart';
 import 'package:riverpod_theory/screen/future_provider_screen.dart';
 import 'package:riverpod_theory/screen/provider_screen.dart';
@@ -13,7 +11,6 @@ import 'package:riverpod_theory/screen/select_provider_screen.dart';
 import 'package:riverpod_theory/screen/state_notifier_provider_screen.dart';
 import 'package:riverpod_theory/screen/state_provider_screen.dart';
 import 'package:riverpod_theory/screen/stream_provider_screen.dart';
-import 'package:riverpod_theory/screen/using_ref_insde_screen.dart';
 
 import 'code_generation_screen.dart';
 
@@ -139,44 +136,6 @@ riverpod에서 모든 provider는 Global하게 선언된다.
               );
             },
             child: const Text('CodeGenerationScreen'),
-          ),
-          ////////////////////////////////////////////////////////////
-          // divider
-          const SizedBox(height: 8.0),
-          const Divider(
-            color: Colors.black,
-            height: 1.0,
-          ),
-          const SizedBox(height: 16.0),
-          DefaultElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => MapAndWhenScreen(),
-                ),
-              );
-            },
-            child: Text('MapAndWhenScreen'),
-          ),
-          DefaultElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AsyncValueScreen(),
-                ),
-              );
-            },
-            child: Text('AsyncValueScreen'),
-          ),
-          DefaultElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => UsingRefInsideScreen(),
-                ),
-              );
-            },
-            child: Text('UsingRefInsideScreen'),
           ),
         ],
       ),
